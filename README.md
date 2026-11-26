@@ -77,4 +77,3 @@ Application : http://localhost:4200
 
 ![Console Keycloak](docs/screenshots/07-keycloak-admin.png)
 
-Toutes les captures sont dans [`docs/screenshots`](docs/screenshots).
