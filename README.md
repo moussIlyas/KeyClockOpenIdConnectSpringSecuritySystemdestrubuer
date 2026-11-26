@@ -49,7 +49,35 @@ Application : http://localhost:4200
 
 ## Captures
 
-Les captures de la version exécutée sont dans [`docs/screenshots`](docs/screenshots).
+### Accueil de l'application
+
+![Accueil de l'application Angular](docs/screenshots/01-home.png)
+
+### Redirection vers la page de connexion Keycloak
+
+![Page de connexion Keycloak](docs/screenshots/02-keycloak-login.png)
+
+### Liste des produits après authentification
+
+![Liste des produits](docs/screenshots/03-products-authenticated.png)
+
+### Espace clients protégé par le guard de rôle
+
+![Espace clients](docs/screenshots/04-customers.png)
+
+### API refusant une requête sans token
+
+![API 401 sans token](docs/screenshots/05-api-401.png)
+
+### API répondant avec un JWT valide
+
+![API 200 avec token](docs/screenshots/06-api-200.png)
+
+### Console d'administration Keycloak
+
+![Console Keycloak](docs/screenshots/07-keycloak-admin.png)
+
+Toutes les captures sont dans [`docs/screenshots`](docs/screenshots).
 
 ## Crédits
 
