@@ -78,8 +78,3 @@ Application : http://localhost:4200
 ![Console Keycloak](docs/screenshots/07-keycloak-admin.png)
 
 Toutes les captures sont dans [`docs/screenshots`](docs/screenshots).
-
-## Crédits
-
-Architecture initiale reprise du projet de **Hafssa Miftah Idrissi** :
-https://github.com/Hafssa-MI/S-curit-des-syst-mes-distribu-s---Oauth2-OIDC-Keycloak
