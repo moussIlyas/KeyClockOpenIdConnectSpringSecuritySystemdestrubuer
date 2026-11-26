@@ -1,16 +1,19 @@
-# Sécurité des systèmes distribués - Oauth2, OIDC, Keycloak
-### Auteur : Hafssa Miftah Idrissi
-### Master : SDIA2
-### Module : Systèmes distribués
-### Année universitaire : 2026/2027
+# mouss.com — OAuth2 / OIDC / Keycloak
 
----
-## Sécuriser une architecture micro-service Spring Angular avec Keycloak
----
+Démonstration d'une architecture distribuée sécurisée : un frontend Angular et un microservice Spring Boot
+protégé par Keycloak (OAuth2 / OpenID Connect, JWT access tokens).
 
-#### Installation et configuration de Keycloak avec Docker
+## Structure
 
-Pour éviter d'installer Keycloak en local, nous utilisons son image Docker officielle (Keycloak 19). Le conteneur est lancé en mode développement, avec la création du compte administrateur au démarrage et un volume pour conserver la configuration :
+| Module | Description | Port |
+| --- | --- | --- |
+| `inventory-service` | API REST `/api/products`, resource server JWT | 8087 |
+| `mouss-oidc-frontend` | Client Angular avec Keycloak Angular + guard de route | 4200 |
+| Keycloak (Docker) | Serveur d'identité, realm `bdcc-realm`, client `ecom-client-ang` | 8080 |
+
+## Démarrage
+
+### 1. Keycloak
 
 ```bash
 docker run -d --name keycloak -p 8080:8080 \
@@ -20,74 +23,35 @@ docker run -d --name keycloak -p 8080:8080 \
   quay.io/keycloak/keycloak:19.0.3 start-dev
 ```
 
-La console d'administration est ensuite accessible sur `http://localhost:8080`. La configuration se fait directement depuis cette console :
+Console : http://localhost:8080/admin
 
-- Création d'un **Realm** dédié à l'application, qui isole les utilisateurs, les clients et les rôles
-- Création d'un **client** à sécuriser, avec l'authentification activée (Client authentication), les flux Standard flow et Direct access grants, ainsi que les Service accounts roles
-- Création des **rôles** (USER, ADMIN) dans le realm
-- Création des **utilisateurs**, avec un mot de passe non temporaire, puis affectation des rôles à chacun
-- Test de l'authentification avec `curl` : grant de type password, refresh token et client credentials, puis analyse du contenu des JWT (Access Token et Refresh Token)
+Créer le realm `bdcc-realm`, le client public `ecom-client-ang` (Standard flow + Direct access grants),
+les rôles `USER` et `ADMIN`, puis deux utilisateurs avec des mots de passe non temporaires.
 
----
+### 2. Backend
 
-#### Création du Micro Service Inventory Service
+```bash
+cd inventory-service
+./mvnw spring-boot:run
+```
 
-- Création du package entites : Avec l'entité Product annotée @Entity
-- Création de package repository : Avec l'interface ProductRepository
-- Création du package web avec le RestControlleur ProductRestController avec une méthode qui retourne la liste des produits et une autre qui retourne un produit par son id
-- Test Avec CommandLineRunner et création des 3 produits
-- Accès interdit sans passage via keycloak d'ou la nécessité à configurer la sécurité
-    ![img_1.png](img_1.png)
-- Configuration de la sécurité : Ajout de la classe SecurityConfig dans le package security qui est annoté @Configuration et @EnableWebSecurity avec un @Bean qui retourne un SecurityFilterChain et injecte un HttpSecurity object pour configurer. Au début demander l'authentification de tous les requetes sauf ceux qui commencent par /api/** et /h2-console/**, puis desactiver le crsf et authentification STATELESS ...
-- Test d'accès qui marche :
-    ![img_2.png](img_2.png)
+L'API refuse toute requête sans token JWT valide émis par Keycloak.
 
----
+### 3. Frontend
 
-#### Création du Frontend
+```bash
+cd mouss-oidc-frontend
+npm install
+npm start
+```
 
-- Création de l'application front Angular
-    ![img_3.png](img_3.png)
-- Création des composantes products et customer puis réglage du routage
-- Résolution du problème do Cors en ajoutant un @Bean à la classe SecurityConfig de type CorsConfigurationSource qui marche aussi pour les routes protégé au lieu de @CrossOrigin(*)
-    ![img_4.png](img_4.png)
+Application : http://localhost:4200
 
----
+## Captures
 
-#### Démarrage de Keycloak
+Les captures de la version exécutée sont dans [`docs/screenshots`](docs/screenshots).
 
-- Démarrage du keycloak et création du realm : Bdcc-realm et client ecom-client-ang avec deux roles user et admin et deux users
-    ![img_5.png](img_5.png)
-    ![img_6.png](img_6.png)
-    ![img_7.png](img_7.png)
-    * Authentification avec uername&password
-    ![img_8.png](img_8.png)
-    ![img_9.png](img_9.png)
-    * Authentification avec refresh token
-    ![img_10.png](img_10.png)
-    ![img_11.png](img_11.png)
-    * Authentification avec client secret
-    ![img_12.png](img_12.png)
-    ![img_13.png](img_13.png)
+## Crédits
 
-
----
-
-#### Sécurité du backend
-
-- Configuration de l'authorization en demandant l'authentification dans SecurityConfig au backend
-- Ajout des paramètres du keycloak (realm , lien de la certif) pour l'accès au public key 
-- Création d'une classe qui fera un JWTConversion dans security package pour accéder aux autorités puis configurer le SecurityFilterChain à utiliser le jwtConverter
-- Ajout du @PreAuthorizze dans les méthodes du RestController pour attribuer les roles et pour que cela marche; l'ajout du @EnableMethodSecurity dans la classeSecurityConfig
-
-
----
-
-#### Sécurité du frontend
-
-- Installation de la dépendance de l'adaptateur keycloakAngular et KeycloakJs
-- Ajout de la fonction dédié dans app.modules.ts
-- Création de silent-check-sso.html pour la gestion des redirections entre keycloak et frontend puis l'ajouter dans providers
-- Ajout d'un guard pour protéger les routes en saisiant les roles correspondants
-- Ajout de l'authentification et login/logout avec keycloak
-    
+Architecture initiale reprise du projet de **Hafssa Miftah Idrissi** :
+https://github.com/Hafssa-MI/S-curit-des-syst-mes-distribu-s---Oauth2-OIDC-Keycloak

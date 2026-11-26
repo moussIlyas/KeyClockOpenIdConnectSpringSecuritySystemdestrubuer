@@ -8,11 +8,11 @@
         <version>4.2.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ma.formation</groupId>
-    <artifactId>ecom-bdcc-app</artifactId>
+    <groupId>com.mouss</groupId>
+    <artifactId>mouss-oidc-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ecom-bdcc-app</name>
-    <description>ecom-bdcc-app</description>
+    <name>mouss-oidc-demo</name>
+    <description>OAuth2 / OIDC / Keycloak demo</description>
     <url/>
     <licenses>
         <license/>
